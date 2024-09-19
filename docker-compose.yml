@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - JWT_SECRET=process.env.JWT_SECRET
+      - MONGODB_URI=process.env.MONGODB_URI
+      - STRIPE_CONNECT_TEST_CLIENT_ID=your_stripe_connect_test_client
+      - STRIPE_TEST_SECRET_KEY=your_stripe_test_secret_key
+      - STRIPE_TEST_API_KEY=your_stripe_test_api_key
+    depends_on:
+      - mongo
+    networks:
+      - app-network
+    command: npm start
+
+  mongo:
+    image: mongo:4.4
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - app-network
+
+volumes:
+  mongo-data:
+
+networks:
+  app-network:
